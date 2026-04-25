@@ -1,5 +1,7 @@
 # ELIZA Rule-Based Chatbot Demo
 
+![ELIZA 1966 landing page preview](./assets/eliza-home-preview.png)
+
 This repository packages a small, static ELIZA showcase with a shared home page and two playable demos:
 
 - [English CRT demo](./Rule-based-AI-explained.html)
@@ -74,6 +76,8 @@ Because the site is static HTML, Vercel can serve it without extra routing confi
 ```text
 .
 ├── index.html
+├── assets/
+│   └── eliza-home-preview.png
 ├── Rule-based-AI-explained.html
 ├── Rule-based-AI-explained_myanmar.html
 ├── README.md
