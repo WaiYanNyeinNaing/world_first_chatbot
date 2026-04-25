@@ -5,342 +5,401 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta
   name="description"
-  content="ELIZA, Joseph Weizenbaum's 1966 rule-based chatbot, with English and Burmese demos on a single static Vercel deployment."
+  content="A 1966-inspired ELIZA chatbot demo with English and Burmese versions."
 />
-<title>ELIZA (1966) | Rule-Based Chatbot Home</title>
+<title>ELIZA 1966 | English and Burmese Chatbot Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Noto+Sans+Myanmar:wght@400;600;700&family=VT323&display=swap" rel="stylesheet" />
 <style>
   :root{
-    --bg:#07110d;
-    --bg-2:#0d1913;
-    --panel:rgba(10,20,15,.72);
-    --panel-strong:rgba(13,27,20,.92);
-    --border:rgba(151,255,168,.16);
-    --text:#ecfff0;
-    --muted:#b5cfbd;
-    --accent:#8dff9d;
-    --accent-strong:#50d66a;
-    --accent-soft:rgba(141,255,157,.12);
-    --shadow:0 20px 80px rgba(0,0,0,.35);
+    --black:#030604;
+    --screen:#071009;
+    --screen-2:#0b160e;
+    --green:#78ff7a;
+    --green-soft:#b8ffb8;
+    --green-dim:#244424;
+    --amber:#d7c29b;
+    --amber-soft:#f1e0bc;
+    --paper:#b8ab90;
+    --ink:#071009;
+    --line:rgba(120,255,122,.28);
+    --shadow:0 24px 70px rgba(0,0,0,.46);
   }
 
   *{box-sizing:border-box}
   html,body{min-height:100%}
   body{
     margin:0;
-    color:var(--text);
-    font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
     background:
-      radial-gradient(circle at top left, rgba(80,214,106,.20), transparent 32%),
-      radial-gradient(circle at 85% 8%, rgba(141,255,157,.16), transparent 28%),
-      radial-gradient(circle at 70% 80%, rgba(47,140,74,.24), transparent 30%),
-      linear-gradient(180deg, #050a08 0%, var(--bg) 48%, var(--bg-2) 100%);
-    line-height:1.6;
+      linear-gradient(180deg, rgba(3,6,4,.94), rgba(3,6,4,.98)),
+      var(--black);
+    color:var(--green-soft);
+    font-family:"IBM Plex Mono", monospace;
+    line-height:1.45;
   }
-
   body::before{
     content:"";
     position:fixed;
     inset:0;
     pointer-events:none;
     background:
-      linear-gradient(transparent 0 94%, rgba(255,255,255,.03) 100%),
-      linear-gradient(90deg, rgba(141,255,157,.04), transparent 20%, transparent 80%, rgba(141,255,157,.04));
-    opacity:.45;
-    mix-blend-mode:screen;
+      repeating-linear-gradient(
+        to bottom,
+        rgba(255,255,255,0) 0,
+        rgba(255,255,255,0) 3px,
+        rgba(120,255,122,.045) 4px
+      );
+    opacity:.8;
+    z-index:3;
+  }
+  body::after{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    box-shadow:inset 0 0 120px rgba(0,0,0,.88);
+    z-index:4;
   }
 
   a{color:inherit;text-decoration:none}
+  img{display:block;max-width:100%}
+  .mm{font-family:"Noto Sans Myanmar", system-ui, sans-serif}
+  .crt{font-family:"VT323", monospace}
   .shell{
     position:relative;
-    z-index:1;
-    max-width:1200px;
-    margin:0 auto;
-    padding:28px 20px 40px;
+    z-index:5;
   }
   .topbar{
     display:flex;
     align-items:center;
     justify-content:space-between;
-    gap:16px;
-    padding-bottom:18px;
-    border-bottom:1px solid var(--border);
-    margin-bottom:26px;
+    gap:18px;
+    min-height:72px;
+    padding:16px 28px;
+    border-bottom:1px solid var(--line);
+    background:rgba(3,6,4,.74);
+    backdrop-filter:blur(10px);
   }
   .brand{
     display:flex;
     flex-direction:column;
     gap:2px;
+    min-width:160px;
   }
   .brand strong{
-    font-size:.92rem;
-    letter-spacing:.26em;
+    color:var(--green);
+    font-size:1rem;
+    letter-spacing:0;
     text-transform:uppercase;
-    font-family:"IBM Plex Mono",monospace;
   }
   .brand span{
-    font-size:.8rem;
-    color:var(--muted);
+    color:var(--amber);
+    font-size:.75rem;
   }
   .nav{
     display:flex;
     flex-wrap:wrap;
-    gap:10px;
+    justify-content:flex-end;
+    gap:8px;
+  }
+  .nav a,
+  .btn{
+    border:1px solid var(--line);
+    border-radius:4px;
+    background:rgba(7,16,9,.76);
+    color:var(--green-soft);
+    font-size:.82rem;
+    font-weight:700;
+    letter-spacing:0;
+    text-transform:uppercase;
+    transition:background .15s ease, color .15s ease, border-color .15s ease, transform .15s ease;
   }
   .nav a{
-    padding:10px 14px;
-    border:1px solid var(--border);
-    border-radius:999px;
-    background:rgba(255,255,255,.02);
-    color:var(--muted);
-    font-size:.82rem;
-    letter-spacing:.08em;
-    text-transform:uppercase;
-    transition:transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease;
+    padding:9px 11px;
   }
   .nav a:hover,
-  .nav a:focus-visible{
-    color:var(--text);
-    border-color:rgba(141,255,157,.38);
-    background:var(--accent-soft);
-    transform:translateY(-1px);
+  .nav a:focus-visible,
+  .btn:hover,
+  .btn:focus-visible{
+    border-color:var(--green);
+    background:rgba(120,255,122,.12);
+    color:#fff;
     outline:none;
-  }
-  .nav a[aria-current="page"]{
-    color:var(--text);
-    border-color:rgba(141,255,157,.48);
-    background:rgba(141,255,157,.15);
-    box-shadow:0 0 0 1px rgba(141,255,157,.08) inset;
+    transform:translateY(-1px);
   }
 
   .hero{
-    display:grid;
-    grid-template-columns:minmax(0,1.35fr) minmax(0,.95fr);
-    gap:24px;
-    align-items:stretch;
+    position:relative;
+    min-height:calc(100vh - 72px);
+    padding:72px 28px 46px;
+    display:flex;
+    align-items:flex-end;
+    overflow:hidden;
+    background:
+      linear-gradient(90deg, rgba(3,6,4,.96) 0%, rgba(3,6,4,.80) 38%, rgba(3,6,4,.18) 72%),
+      linear-gradient(180deg, rgba(3,6,4,.2), rgba(3,6,4,.82)),
+      url("eliza.webp") center right / cover no-repeat;
   }
-  .hero-copy,
-  .panel,
-  .content-card,
-  .launch-card{
-    border:1px solid var(--border);
-    border-radius:26px;
-    background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-    box-shadow:var(--shadow);
-    backdrop-filter:blur(18px);
+  .hero-inner{
+    width:min(1160px, 100%);
+    margin:0 auto;
+    display:grid;
+    grid-template-columns:minmax(0, 520px) minmax(280px, 430px);
+    gap:34px;
+    align-items:end;
   }
   .hero-copy{
-    padding:34px;
-    background:
-      linear-gradient(180deg, rgba(141,255,157,.09), rgba(255,255,255,.02)),
-      rgba(10,20,15,.65);
+    max-width:560px;
   }
-  .eyebrow{
+  .kicker{
     display:inline-flex;
-    align-items:center;
-    gap:8px;
-    margin-bottom:18px;
-    padding:8px 12px;
-    border:1px solid rgba(141,255,157,.24);
-    border-radius:999px;
-    background:rgba(141,255,157,.08);
-    color:var(--accent);
+    color:var(--amber-soft);
+    border:1px solid rgba(215,194,155,.55);
+    background:rgba(3,6,4,.62);
+    padding:7px 10px;
+    border-radius:4px;
     font-size:.78rem;
-    letter-spacing:.12em;
+    font-weight:700;
     text-transform:uppercase;
-    font-family:"IBM Plex Mono",monospace;
   }
   h1{
-    margin:0;
-    font-family:"Fraunces",serif;
-    font-size:clamp(3rem, 6vw, 5.4rem);
-    line-height:.94;
-    letter-spacing:-.04em;
-    max-width:12ch;
+    margin:18px 0 0;
+    color:var(--green);
+    font-family:"VT323", monospace;
+    font-size:5.8rem;
+    line-height:.82;
+    letter-spacing:0;
+    text-shadow:0 0 6px rgba(120,255,122,.42), 0 0 28px rgba(120,255,122,.18);
   }
-  .lead{
-    margin:20px 0 0;
-    max-width:62ch;
-    color:var(--muted);
-    font-size:1.05rem;
+  .tagline{
+    margin:18px 0 0;
+    color:var(--green-soft);
+    font-size:1.08rem;
+    max-width:38rem;
+  }
+  .tagline .mm{
+    display:block;
+    margin-top:8px;
+    color:var(--amber-soft);
+    font-size:1rem;
   }
   .actions{
     display:flex;
     flex-wrap:wrap;
-    gap:12px;
-    margin-top:28px;
+    gap:10px;
+    margin-top:24px;
   }
   .btn{
     display:inline-flex;
     align-items:center;
     justify-content:center;
-    gap:10px;
-    min-height:48px;
-    padding:0 18px;
-    border-radius:14px;
-    font-weight:700;
-    letter-spacing:.01em;
-    transition:transform .15s ease, border-color .15s ease, background .15s ease, color .15s ease;
-  }
-  .btn:hover,
-  .btn:focus-visible{
-    transform:translateY(-1px);
-    outline:none;
+    min-height:46px;
+    padding:0 16px;
   }
   .btn.primary{
-    background:linear-gradient(180deg, var(--accent), #63e878);
-    color:#08210f;
-    border:1px solid rgba(141,255,157,.55);
+    background:var(--green);
+    color:var(--ink);
+    border-color:var(--green);
   }
   .btn.secondary{
-    background:rgba(255,255,255,.03);
-    color:var(--text);
-    border:1px solid rgba(141,255,157,.22);
+    background:rgba(3,6,4,.76);
   }
-  .panel{
-    display:flex;
-    flex-direction:column;
-    gap:18px;
-    padding:26px;
-    background:linear-gradient(180deg, rgba(13,27,20,.88), rgba(7,15,11,.8));
+  .hero-note{
+    border:1px solid rgba(215,194,155,.45);
+    border-radius:6px;
+    background:rgba(3,6,4,.72);
+    color:var(--amber-soft);
+    padding:16px;
+    box-shadow:var(--shadow);
   }
-  .stat-grid{
-    display:grid;
-    grid-template-columns:repeat(3, minmax(0, 1fr));
-    gap:12px;
-  }
-  .stat{
-    padding:16px 14px;
-    border-radius:18px;
-    background:rgba(255,255,255,.035);
-    border:1px solid rgba(141,255,157,.12);
-  }
-  .stat span{
+  .hero-note strong{
     display:block;
     margin-bottom:8px;
-    color:var(--muted);
-    font-size:.77rem;
-    letter-spacing:.12em;
+    color:var(--green);
+    font-size:.85rem;
     text-transform:uppercase;
-    font-family:"IBM Plex Mono",monospace;
   }
-  .stat strong{
-    display:block;
-    font-size:1.05rem;
-    line-height:1.25;
-  }
-  .panel h2,
-  .section h2{
-    margin:0 0 10px;
-    font-size:1.08rem;
-    letter-spacing:.02em;
-  }
-  .panel p,
-  .section p{
+  .hero-note p{
     margin:0;
-    color:var(--muted);
-  }
-  .panel ul{
-    margin:12px 0 0;
-    padding-left:18px;
-    color:var(--text);
-  }
-  .panel li + li{margin-top:8px}
-
-  .sections{
-    display:grid;
-    grid-template-columns:repeat(3, minmax(0, 1fr));
-    gap:18px;
-    margin-top:22px;
-  }
-  .content-card{
-    padding:22px;
-    min-height:100%;
-  }
-  .content-card .label{
-    display:inline-flex;
-    margin-bottom:14px;
-    color:var(--accent);
-    font-size:.76rem;
-    letter-spacing:.14em;
-    text-transform:uppercase;
-    font-family:"IBM Plex Mono",monospace;
-  }
-  .content-card p + p{margin-top:10px}
-  .callout{
-    margin-top:16px;
-    padding:14px 16px;
-    border-left:3px solid var(--accent);
-    border-radius:0 14px 14px 0;
-    background:rgba(141,255,157,.08);
-    color:var(--text);
-  }
-
-  .launch{
-    margin-top:22px;
-    display:grid;
-    grid-template-columns:repeat(2, minmax(0, 1fr));
-    gap:18px;
-  }
-  .launch-card{
-    padding:24px;
-    background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-  }
-  .launch-card h3{
-    margin:0 0 8px;
-    font-size:1.25rem;
-  }
-  .launch-card p{
-    margin:0;
-    color:var(--muted);
-  }
-  .launch-card .btn{
-    margin-top:16px;
-    width:100%;
-  }
-  footer{
-    padding:26px 2px 0;
-    color:var(--muted);
     font-size:.92rem;
   }
-  .mono{
-    font-family:"IBM Plex Mono",monospace;
+
+  .history{
+    border-top:1px solid var(--line);
+    background:
+      linear-gradient(180deg, rgba(184,171,144,.96), rgba(139,128,106,.96));
+    color:var(--ink);
+  }
+  .history-inner{
+    width:min(1160px, calc(100% - 56px));
+    margin:0 auto;
+    padding:34px 0 38px;
+    display:grid;
+    grid-template-columns:minmax(260px, 380px) minmax(0, 1fr);
+    gap:26px;
+    align-items:start;
+  }
+  .portrait{
+    border:3px solid rgba(7,16,9,.78);
+    border-radius:6px;
+    background:#111;
+    box-shadow:10px 10px 0 rgba(7,16,9,.18);
+    overflow:hidden;
+  }
+  .portrait img{
+    width:100%;
+    aspect-ratio:508/286;
+    object-fit:cover;
+    filter:sepia(.12) contrast(1.08);
+  }
+  .caption{
+    padding:9px 11px;
+    background:var(--ink);
+    color:var(--amber-soft);
+    font-size:.78rem;
+  }
+  .history-copy{
+    display:grid;
+    gap:14px;
+  }
+  .history-title{
+    margin:0;
+    font-family:"VT323", monospace;
+    font-size:3.4rem;
+    line-height:.9;
+    letter-spacing:0;
+  }
+  .history-grid{
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    gap:10px;
+  }
+  .fact{
+    min-height:148px;
+    padding:14px;
+    border:2px solid rgba(7,16,9,.72);
+    border-radius:6px;
+    background:rgba(241,224,188,.42);
+  }
+  .fact span{
+    display:block;
+    margin-bottom:8px;
+    font-weight:700;
+    text-transform:uppercase;
+  }
+  .fact p{
+    margin:0;
+    font-size:.92rem;
+  }
+  .fact .mm{
+    margin-top:8px;
+    font-size:.88rem;
   }
 
-  @media (max-width: 920px){
-    .hero,
-    .sections,
-    .launch{
+  .demo-band{
+    background:var(--screen);
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .demo-inner{
+    width:min(1160px, calc(100% - 56px));
+    margin:0 auto;
+    padding:34px 0;
+    display:grid;
+    grid-template-columns:minmax(0, 1fr) minmax(280px, 420px);
+    gap:24px;
+    align-items:center;
+  }
+  .terminal{
+    border:1px solid var(--green-dim);
+    border-radius:6px;
+    background:#17201f;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+  }
+  .terminal img{
+    width:100%;
+    aspect-ratio:751/487;
+    object-fit:cover;
+    filter:contrast(1.08) saturate(.88);
+  }
+  .demo-copy{
+    color:var(--green-soft);
+  }
+  .demo-copy h2{
+    margin:0;
+    color:var(--green);
+    font-family:"VT323", monospace;
+    font-size:3rem;
+    line-height:.95;
+    letter-spacing:0;
+  }
+  .demo-copy p{
+    margin:12px 0 0;
+    color:var(--amber-soft);
+  }
+  .demo-copy .actions{
+    margin-top:20px;
+  }
+
+  footer{
+    padding:18px 28px 24px;
+    color:var(--amber);
+    background:var(--black);
+    font-size:.8rem;
+    text-align:center;
+  }
+
+  @media (max-width: 980px){
+    .hero{
+      min-height:auto;
+      padding-top:56px;
+    }
+    .hero-inner,
+    .history-inner,
+    .demo-inner{
       grid-template-columns:1fr;
     }
-    .topbar{
-      flex-direction:column;
-      align-items:flex-start;
+    .hero-note{
+      max-width:560px;
     }
-    .hero-copy,
-    .panel{
-      padding:22px;
-    }
-    h1{
-      max-width:none;
+    .history-grid{
+      grid-template-columns:1fr;
     }
   }
 
   @media (max-width: 640px){
-    .shell{
-      padding:20px 14px 28px;
+    .topbar{
+      align-items:flex-start;
+      flex-direction:column;
+      padding:14px;
     }
     .nav{
       width:100%;
+      justify-content:stretch;
     }
     .nav a{
-      flex:1 1 auto;
+      flex:1 1 120px;
       text-align:center;
     }
-    .stat-grid{
-      grid-template-columns:1fr;
+    .hero{
+      padding:44px 14px 28px;
+      background:
+        linear-gradient(180deg, rgba(3,6,4,.82) 0%, rgba(3,6,4,.64) 48%, rgba(3,6,4,.94) 100%),
+        url("eliza.webp") top center / cover no-repeat;
+    }
+    h1{
+      font-size:4rem;
+    }
+    .history-inner,
+    .demo-inner{
+      width:calc(100% - 28px);
+      padding:26px 0;
+    }
+    .history-title,
+    .demo-copy h2{
+      font-size:2.5rem;
     }
     .actions{
       flex-direction:column;
@@ -354,115 +413,99 @@
 <body>
   <div class="shell">
     <header class="topbar">
-      <a class="brand" href="index.html">
-        <strong>ELIZA</strong>
-        <span>1966 rule-based chatbot archive</span>
+      <a class="brand" href="index.html" aria-label="ELIZA home">
+        <strong>ELIZA / 1966</strong>
+        <span>Rule-based chatbot demo</span>
       </a>
       <nav class="nav" aria-label="Primary">
         <a href="index.html" aria-current="page">Home</a>
-        <a href="Rule-based-AI-explained.html">English Demo</a>
-        <a href="Rule-based-AI-explained_myanmar.html">Burmese Demo</a>
+        <a href="Rule-based-AI-explained.html">English</a>
+        <a href="Rule-based-AI-explained_myanmar.html">မြန်မာ</a>
       </nav>
     </header>
 
     <main>
       <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-copy">
-          <div class="eyebrow">Single static deployment for Vercel</div>
-          <h1 id="hero-title">ELIZA showed that simple rules can feel strangely human.</h1>
-          <p class="lead">
-            Built by Joseph Weizenbaum in 1966, ELIZA matched user input against hand-written patterns and
-            responded with scripted reflections. Its famous Rogerian therapist simulation asked people to keep
-            talking, which made the program feel much more intelligent than its mechanics really were.
-          </p>
-          <div class="actions">
-            <a class="btn primary" href="Rule-based-AI-explained.html">Launch English Demo</a>
-            <a class="btn secondary" href="Rule-based-AI-explained_myanmar.html">Launch Burmese Demo</a>
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <span class="kicker">MIT, 1966 - Joseph Weizenbaum</span>
+            <h1 id="hero-title">ELIZA</h1>
+            <p class="tagline">
+              The chatbot before chatbots: simple rules, a green screen, and a strange feeling of being understood.
+              <span class="mm">Chatbot တွေ မပေါ်ခင်က chatbot - rule-based စကားပြောစနစ်ကို လက်တွေ့စမ်းနိုင်တဲ့ demo ပါ။</span>
+            </p>
+            <div class="actions" aria-label="Launch demos">
+              <a class="btn primary" href="Rule-based-AI-explained.html">Play English Demo</a>
+              <a class="btn secondary mm" href="Rule-based-AI-explained_myanmar.html">မြန်မာ Demo စမ်းရန်</a>
+            </div>
+          </div>
+
+          <aside class="hero-note" aria-label="Short explanation">
+            <strong>What made it famous?</strong>
+            <p>
+              ELIZA did not think. It matched keywords, reflected your words back, and still made people feel heard.
+            </p>
+            <p class="mm">
+              ELIZA က နားလည်တာမဟုတ်ပါဘူး။ စကားလုံးကို match လုပ်ပြီး မေးခွန်းပြန်မေးတာပါ။
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <section class="history" aria-labelledby="history-title">
+        <div class="history-inner">
+          <figure class="portrait">
+            <img src="1747072480449.png" alt="Joseph Weizenbaum with ELIZA text in the background" />
+            <figcaption class="caption">Joseph Weizenbaum created ELIZA at MIT in 1966.</figcaption>
+          </figure>
+
+          <div class="history-copy">
+            <h2 id="history-title" class="history-title">Why ELIZA matters</h2>
+            <div class="history-grid">
+              <article class="fact">
+                <span>1966 origin</span>
+                <p>ELIZA was one of the first programs to make typed conversation feel personal.</p>
+                <p class="mm">ELIZA က လူနဲ့စာရိုက်ပြီး စကားပြောသလို ခံစားစေခဲ့တဲ့ အစောဆုံး program တွေထဲက တစ်ခုပါ။</p>
+              </article>
+              <article class="fact">
+                <span>Rule engine</span>
+                <p>It used keywords, templates, and pronoun reflection instead of real understanding.</p>
+                <p class="mm">နားလည်တာမဟုတ်ဘဲ keyword, template, pronoun reflection နည်းနဲ့ ပြန်ဖြေပါတယ်။</p>
+              </article>
+              <article class="fact">
+                <span>Modern impact</span>
+                <p>Its "ELIZA effect" became a foundation story for ChatGPT and conversational AI.</p>
+                <p class="mm">ဒီ "ELIZA effect" က ChatGPT နဲ့ modern chatbot တွေရဲ့ အရေးကြီးတဲ့ သမိုင်းစတင်ချက်ပါ။</p>
+              </article>
+            </div>
           </div>
         </div>
-
-        <aside class="panel" aria-label="ELIZA summary">
-          <div class="stat-grid">
-            <div class="stat">
-              <span>Year</span>
-              <strong>1966</strong>
-            </div>
-            <div class="stat">
-              <span>Creator</span>
-              <strong>Joseph Weizenbaum</strong>
-            </div>
-            <div class="stat">
-              <span>Model</span>
-              <strong>Rogerian therapist simulation</strong>
-            </div>
-          </div>
-
-          <div>
-            <h2>What ELIZA actually does</h2>
-            <ul>
-              <li>Matches input with simple keyword and pattern rules</li>
-              <li>Reflects pronouns to keep the reply conversational</li>
-              <li>Falls back to open-ended prompts when no rule fits</li>
-            </ul>
-          </div>
-        </aside>
       </section>
 
-      <section class="sections" aria-label="Background and impact">
-        <article class="content-card">
-          <span class="label">How it works</span>
-          <h2>Rule-based pattern matching</h2>
-          <p>
-            ELIZA does not understand language in the modern AI sense. It uses deterministic pattern matching,
-            decomposition templates, and reflection rules to turn a sentence back into a therapeutic question.
-          </p>
-          <div class="callout mono">Keyword rules + pronoun reflection + fallback prompts</div>
-        </article>
-
-        <article class="content-card">
-          <span class="label">Why it matters</span>
-          <h2>An ancestor of conversational AI</h2>
-          <p>
-            ELIZA is often described as an ancestor, and sometimes a godfather, of ChatGPT-era conversational
-            systems because it showed how powerful the illusion of understanding can be when a system mirrors
-            the user well.
-          </p>
-        </article>
-
-        <article class="content-card">
-          <span class="label">What is included</span>
-          <h2>Two demos, one homepage</h2>
-          <p>
-            This repository ships a polished English CRT-style demo and a Burmese demo with the same
-            rule-driven engine, plus this shared landing page for a single static Vercel deployment.
-          </p>
-        </article>
-      </section>
-
-      <section class="launch" aria-label="Launch demos">
-        <article class="launch-card">
-          <h3>English Demo</h3>
-          <p>
-            The original CRT-inspired interface with chips, reset, and a rule trace that shows each step of
-            the response engine.
-          </p>
-          <a class="btn primary" href="Rule-based-AI-explained.html">Open English Chat</a>
-        </article>
-
-        <article class="launch-card">
-          <h3>Burmese Demo</h3>
-          <p>
-            A localized version with Burmese prompts and the same ELIZA-style reflection logic for a hands-on
-            look at rule-based conversation.
-          </p>
-          <a class="btn secondary" href="Rule-based-AI-explained_myanmar.html">Open Burmese Chat</a>
-        </article>
+      <section class="demo-band" aria-labelledby="demo-title">
+        <div class="demo-inner">
+          <figure class="terminal">
+            <img src="ELIZA_conversation%20(1).png" alt="Original-style ELIZA terminal conversation screenshot" />
+          </figure>
+          <div class="demo-copy">
+            <h2 id="demo-title">Try the illusion</h2>
+            <p>
+              Choose English or Burmese and watch the rule trace show how each reply is built.
+            </p>
+            <p class="mm">
+              English သို့မဟုတ် မြန်မာ demo ကိုဖွင့်ပြီး reply တစ်ကြောင်းချင်းစီကို rule trace နဲ့ ကြည့်နိုင်ပါတယ်။
+            </p>
+            <div class="actions">
+              <a class="btn primary" href="Rule-based-AI-explained.html">English Chat</a>
+              <a class="btn secondary mm" href="Rule-based-AI-explained_myanmar.html">မြန်မာ Chat</a>
+            </div>
+          </div>
+        </div>
       </section>
     </main>
 
     <footer>
-      Built as a static site: place the HTML files at the repository root and deploy directly to Vercel with
-      no build step required.
+      Static HTML demo for ELIZA history, English/Burmese language testing, and Vercel deployment.
     </footer>
   </div>
 </body>
