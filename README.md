@@ -82,7 +82,10 @@ Because the site is static HTML, Vercel can serve it without extra routing confi
 ├── index.html
 ├── assets/
 │   ├── eliza-burmese-demo.png
-│   └── eliza-home-preview.png
+│   ├── eliza-home-preview.png
+│   ├── eliza-terminal-conversation.png
+│   ├── eliza-vt100.webp
+│   └── joseph-weizenbaum-eliza.png
 ├── Rule-based-AI-explained.html
 ├── Rule-based-AI-explained_myanmar.html
 ├── README.md
