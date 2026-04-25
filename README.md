@@ -26,6 +26,10 @@ This project keeps that history visible in a browser-friendly form:
 - Burmese demo with localized prompts and the same rule-driven experience
 - Static files only, so the site can be deployed without a build step
 
+### Burmese Demo Preview
+
+![ELIZA Burmese demo preview](./assets/eliza-burmese-demo.png)
+
 ## Local Run
 
 You can open the site directly from the filesystem, or serve it locally with any static file server.
@@ -77,6 +81,7 @@ Because the site is static HTML, Vercel can serve it without extra routing confi
 .
 ├── index.html
 ├── assets/
+│   ├── eliza-burmese-demo.png
 │   └── eliza-home-preview.png
 ├── Rule-based-AI-explained.html
 ├── Rule-based-AI-explained_myanmar.html
